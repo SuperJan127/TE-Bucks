@@ -1,6 +1,14 @@
 BEGIN TRANSACTION;
 
+--rollback;
+
+drop table if exists transfers;
+drop table if exists accounts;
 DROP TABLE IF EXISTS users;
+drop table if exists transfer_types;
+drop table if exists transfer_statuses;
+
+
 
 CREATE TABLE users (
 	user_id serial NOT NULL,
@@ -14,5 +22,56 @@ CREATE TABLE users (
 	CONSTRAINT uq_username UNIQUE (username)
 );
 
+create table accounts(
+	account_id serial not null,
+	user_id int not null,
+	balance numeric not null, 
+	constraint pk_accounts primary key (account_id),
+	constraint fk_accounts_users foreign key (user_id) references users (user_id)
+);
 
+create table transfer_types (
+	type_id serial not null,
+	type_name varchar(50) not null,
+	constraint pk_transfer_types primary key (type_id)
+);
+
+create table transfer_statuses (
+	status_id serial not null,
+	status_name varchar(50) not null,
+	constraint pk_transfer_statuses primary key (status_id)
+);
+
+
+create table transfers (
+	transfer_id serial not null,
+	transfer_type_id int not null,
+	transfer_status_id int not null,
+	account_from int not null,
+	account_to int not null,
+	amount numeric not null,
+	constraint pk_transfers primary key (transfer_id),
+	constraint fk_transfer_type foreign key (transfer_type_id) references transfer_types(type_id),
+	constraint fk_transfer_status foreign key (transfer_status_id) references transfer_statuses(status_id),
+	constraint fk_transfer_account_to foreign key (account_to) references accounts(account_id),
+	constraint fk_transfer_account_from foreign key (account_from) references accounts(account_id)
+);
+
+insert into transfer_types(type_name)
+values ('Request'),
+		('Send');
+
+insert into transfer_statuses(status_name)
+values ('Pending'),
+		('Approved'),
+		('Rejected');
+		
+insert into users (username, password_hash, first_name, last_name, email)
+values ('test1', 'test1', 'test', '1', 'test1@email.com'),
+		('test2', 'test2', 'test', '2', 'test2@email.com');
+		
+insert into accounts (user_id, balance)
+values ((select user_id from users where username = 'test1'), 1000 ),
+		((select user_id from users where username = 'test2'), 1000);
+		
 COMMIT TRANSACTION;
