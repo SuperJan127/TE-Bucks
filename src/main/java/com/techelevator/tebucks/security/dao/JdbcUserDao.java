@@ -1,8 +1,10 @@
 package com.techelevator.tebucks.security.dao;
 
 import com.techelevator.tebucks.exception.DaoException;
+import com.techelevator.tebucks.security.model.Account;
 import com.techelevator.tebucks.security.model.RegisterUserDto;
 import com.techelevator.tebucks.security.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,14 +12,20 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class JdbcUserDao implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
+    @Autowired
+    private JdbcAccountDao accountDao;
 
     public JdbcUserDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
+
 
     public User getUserById(int userId) {
         User user = null;
@@ -66,7 +74,9 @@ public class JdbcUserDao implements UserDao {
                 throw new DaoException("Could not create user");
             }
 
-            // TODO: Create account for the user with a starting balance of $1000
+            Account account = new Account() ;
+            account.setUserId(newUserId);
+            accountDao.createAccount(account);
 
             return getUserById(newUserId);
         } catch (CannotGetJdbcConnectionException e) {

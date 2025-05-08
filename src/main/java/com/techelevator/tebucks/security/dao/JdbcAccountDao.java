@@ -6,11 +6,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class JdbcAccountDao implements AccountDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -49,6 +51,21 @@ public class JdbcAccountDao implements AccountDao {
             throw new DaoException("Unable to connect to server or database", e);
         }
          return account;
+    }
+
+    @Override
+    public Account getAccountByUserId(int id) {
+        Account account = null;
+        String sql = "select account_id, user_id, balance from accounts where user_id = ?;";
+        try{
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
+            if(results.next()){
+                account = mapRowToAccount(results);
+            }
+        }catch (CannotGetJdbcConnectionException e){
+            throw new DaoException("Unable to connect to server or database", e);
+        }
+        return account;
     }
 
     @Override
