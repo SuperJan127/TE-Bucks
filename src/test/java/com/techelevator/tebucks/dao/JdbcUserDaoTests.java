@@ -1,5 +1,6 @@
 package com.techelevator.tebucks.dao;
 
+import com.techelevator.tebucks.security.dao.AccountDao;
 import com.techelevator.tebucks.security.dao.JdbcUserDao;
 import com.techelevator.tebucks.exception.DaoException;
 import com.techelevator.tebucks.security.model.RegisterUserDto;
@@ -15,6 +16,7 @@ public class JdbcUserDaoTests extends BaseDaoTests {
     private static final User USER_3 = new User(3, "user3", "user3", "ROLE_USER", true);
 
     private JdbcUserDao sut;
+
 
     @Before
     public void setup() {
