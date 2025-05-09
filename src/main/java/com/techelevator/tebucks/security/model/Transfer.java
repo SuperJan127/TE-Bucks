@@ -4,16 +4,17 @@ import java.math.BigDecimal;
 
 public class Transfer {
     private int transferId;
-    private int transferTypeId;
-    private int transferStatusId;
-    private int accountFrom;
-    private int accountTo;
+    private String transferType;
+    private String transferStatus;
+    private User accountFrom;
+    private User accountTo;
     BigDecimal amount = new BigDecimal("0");
 
-    public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFrom, int accountTo, BigDecimal amount) {
+    public Transfer(int transferId, String transferType, String transferStatus, User accountFrom,
+                    User accountTo, BigDecimal amount) {
         this.transferId = transferId;
-        this.transferTypeId = transferTypeId;
-        this.transferStatusId = transferStatusId;
+        this.transferType = transferType;
+        this.transferStatus = transferStatus;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
         this.amount = amount;
@@ -27,39 +28,39 @@ public class Transfer {
     }
 
 
-    public int getTransferTypeId() {
-        return transferTypeId;
+    public String getTransferType() {
+        return transferType;
     }
 
-    public void setTransferTypeId(int transferTypeId) {
-        this.transferTypeId = transferTypeId;
+    public void setTransferType(String transferTypeI) {
+        this.transferType = transferType;
     }
 
-    public int getTransferStatusId() {
-        return transferStatusId;
+    public String getTransferStatus() {
+        return transferStatus;
     }
 
-    public void setTransferStatusId(int transferStatusId) {
-        this.transferStatusId = transferStatusId;
+    public void setTransferStatus(String transferStatus) {
+        this.transferStatus = transferStatus;
     }
 
     public void setTransferId(int transferId) {
         this.transferId = transferId;
     }
 
-    public int getAccountFrom() {
+    public User getAccountFrom() {
         return accountFrom;
     }
 
-    public void setAccountFrom(int accountFrom) {
+    public void setAccountFrom(User accountFrom) {
         this.accountFrom = accountFrom;
     }
 
-    public int getAccountTo() {
+    public User getAccountTo() {
         return accountTo;
     }
 
-    public void setAccountTo(int accountTo) {
+    public void setAccountTo(User accountTo) {
         this.accountTo = accountTo;
     }
 
