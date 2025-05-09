@@ -85,6 +85,26 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
+    public Account getAccountByUserName(String username) {
+        Account output = null;
+        String sql = "Select * from users\n" +
+                "join accounts as ac on users.user_id = ac.user_id\n" +
+                "Where username = ?;";
+
+        try{
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
+            if(results.next()){
+                output = mapRowToAccount(results);
+            }
+        } catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Can't get a reference to the source of data.",e);
+        } catch(DataIntegrityViolationException e){
+            throw new DaoException("Data breaks the rules.",e);
+        }
+        return output;
+    }
+
+    @Override
     public Account updateBalance(Account account) {
         Account output = null;
         String sql = "update account" +
