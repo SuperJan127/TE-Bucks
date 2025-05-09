@@ -6,6 +6,7 @@ import com.techelevator.tebucks.security.dao.TransferDao;
 import com.techelevator.tebucks.security.dao.UserDao;
 import com.techelevator.tebucks.security.model.Account;
 import com.techelevator.tebucks.security.model.Transfer;
+import com.techelevator.tebucks.security.model.User;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,15 +20,6 @@ public class TransferService {
     private AccountDao accountDao;
     private UserDao userDao;
 
-    private final int TRANSFER_TYPE_SEND = 2;
-
-    private final int TRANSFER_TYPE_REQUEST = 1;
-
-    private final int STATUS_PENDING = 1;
-
-    private final int STATUS_APPROVED = 2;
-
-    private final int STATUS_REJECTED = 3;
 
     public TransferService(TransferDao transferDao, AccountDao accountDao, UserDao userDao) {
         this.transferDao = transferDao;
@@ -35,9 +27,9 @@ public class TransferService {
         this.userDao = userDao;
     }
 
-    public Transfer sendTransfer(int userFrom, int userTo, BigDecimal amount) {
-        Account sender = accountDao.getAccountByUserId(userFrom);
-        Account receiver = accountDao.getAccountByUserId(userTo);
+    public Transfer sendTransfer(User userFrom, User userTo, BigDecimal amount) {
+           Account sender = accountDao.getAccountByUserId(userFrom.getId());
+           Account receiver = accountDao.getAccountByUserId(userTo.getId());
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Transfer amount must be greater than zero");
         }
@@ -49,10 +41,10 @@ public class TransferService {
         }
 
         Transfer transfer = new Transfer();
-        transfer.setAccountFrom(sender.getAccountId());
-        transfer.setAccountTo(receiver.getAccountId());
-        transfer.setTransferTypeId(TRANSFER_TYPE_SEND);
-        transfer.setTransferStatusId(STATUS_APPROVED);
+        transfer.setAccountFrom(userFrom);
+        transfer.setAccountTo(userTo);
+        transfer.setTransferType("Send");
+        transfer.setTransferStatus("Approved");
         transfer.setAmount(amount);
 
         Transfer createdTransfer = transferDao.createTransfer(transfer);
@@ -63,9 +55,9 @@ public class TransferService {
         return createdTransfer;
     }
 
-    public Transfer requestTransfer(int userFrom, int userTo, BigDecimal amount) {
-        Account sender = accountDao.getAccountByUserId(userFrom);
-        Account receiver = accountDao.getAccountByUserId(userTo);
+    public Transfer requestTransfer(User userFrom, User userTo, BigDecimal amount) {
+        Account sender = accountDao.getAccountByUserId(userFrom.getId());
+        Account receiver = accountDao.getAccountByUserId(userTo.getId());
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Transfer amount must be greater than zero");
         }
@@ -73,10 +65,10 @@ public class TransferService {
             throw new IllegalArgumentException("Cannot request money from the same account");
         }
         Transfer request = new Transfer();
-        request.setAccountFrom(sender.getAccountId());
-        request.setAccountTo(receiver.getAccountId());
-        request.setTransferTypeId(TRANSFER_TYPE_REQUEST);
-        request.setTransferStatusId(STATUS_PENDING);
+        request.setAccountFrom(userFrom);
+        request.setAccountTo(userTo);
+        request.setTransferType("Request");
+        request.setTransferStatus("Pending");
         request.setAmount(amount);
 
         Transfer createdRequest = transferDao.createTransfer(request);
@@ -86,18 +78,21 @@ public class TransferService {
     
     public Transfer approveTransfer(int transferId){
         Transfer newTransfer = transferDao.getTransferByTransferId(transferId);
-        Account accountTo = accountDao.getAccountById(newTransfer.getAccountTo());
-        Account accountFrom = accountDao.getAccountByUserId(newTransfer.getAccountFrom());
-        newTransfer.setTransferStatusId(STATUS_APPROVED);
-        accountService.updateBalance(accountTo, newTransfer.getAmount(), true);
-        accountService.updateBalance(accountFrom, newTransfer.getAmount(), false);
+        User userTo = newTransfer.getAccountTo();
+        User userFrom = newTransfer.getAccountFrom();
+        newTransfer.setTransferStatus("Approved");
+        accountService.updateBalance(accountDao.getAccountByUserId(userTo.getId()),
+                newTransfer.getAmount(),
+                true);
+        accountService.updateBalance(accountDao.getAccountByUserId(userFrom.getId()),
+                newTransfer.getAmount(), false);
 
         return newTransfer;
     }
 
     public Transfer rejectTransfer(int transferId){
         Transfer newTransfer = transferDao.getTransferByTransferId(transferId);
-        newTransfer.setTransferStatusId(STATUS_REJECTED);
+        newTransfer.setTransferStatus("Rejected");
         return newTransfer;
     }
     
