@@ -10,6 +10,8 @@ public interface TransferDao {
 
     Transfer getTransferByTransferId(int id);
 
+    List<Transfer> getTransfersByAccountId(int account_id);
+
     List<Transfer> getTransfersByAccountTo(int account_id);
 
     List<Transfer> getTransferByAccountFrom(int account_id);
