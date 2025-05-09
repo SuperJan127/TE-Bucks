@@ -18,9 +18,13 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDao{
     private final JdbcTemplate jdbcTemplate;
     private UserDao userDao;
-    public JdbcTransferDao(DataSource dataSource, UserDao userDao) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+
+    private AccountDao accountDao;
+
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate, UserDao userDao, AccountDao accountDao) {
+        this.jdbcTemplate = jdbcTemplate;
         this.userDao = userDao;
+        this.accountDao = accountDao;
     }
 
     @Override
@@ -173,13 +177,13 @@ public class JdbcTransferDao implements TransferDao{
     @Override
     public Transfer createTransfer(Transfer transfer) {
         Transfer output =null;
-        String sql = "insert into transfers (transfer_type_id, transfer_status_id, account_from, " +
-                "account_from, amount) values (?, ?, ?, ?, ?) returning transfer_id;";
-
+        String sql = "insert into transfers (account_from, " +
+                "account_to, amount) values (?, ?, ?) returning transfer_id;";
+        Account accountTo = accountDao.getAccountByUserId(transfer.getAccountTo().getId());
+        Account accountFrom = accountDao.getAccountByUserId(transfer.getAccountFrom().getId());
         try {
             int newTransferId = jdbcTemplate.queryForObject(sql, int.class,
-                    transfer.getTransferType(),transfer.getTransferStatus(),
-                    transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+                    accountFrom.getAccountId(), accountTo.getAccountId(), transfer.getAmount());
             output = getTransferByTransferId(newTransferId);
         } catch (CannotGetJdbcConnectionException e) {
             throw new DaoException("Can't get a reference to the source of data.",e);
