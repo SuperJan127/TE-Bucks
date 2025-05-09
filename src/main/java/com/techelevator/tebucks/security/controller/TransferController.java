@@ -3,9 +3,7 @@ package com.techelevator.tebucks.security.controller;
 import com.techelevator.tebucks.security.dao.AccountDao;
 import com.techelevator.tebucks.security.dao.TransferDao;
 import com.techelevator.tebucks.security.dao.UserDao;
-import com.techelevator.tebucks.security.model.Account;
-import com.techelevator.tebucks.security.model.Transfer;
-import com.techelevator.tebucks.security.model.User;
+import com.techelevator.tebucks.security.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +30,7 @@ public class TransferController {
         this.userDao = userDao;
     }
 
+
     @GetMapping(path= "/transfers/{id}")
     public Transfer getTransfer(@PathVariable int id){
         Transfer transfer = transferDao.getTransferByTransferId(id);
@@ -42,11 +41,31 @@ public class TransferController {
         }
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(path="/transfers")
+    public Transfer createTransfer(@RequestBody NewTransferDto newTransferDto){
+        Transfer transfer = new Transfer();
+        transfer.setTransferType(newTransferDto.getTransferType());
+        transfer.setAccountFrom(userDao.getUserById(newTransferDto.getUserFrom()));
+        transfer.setAccountTo(userDao.getUserById(newTransferDto.getUserTo()));
+        transfer.setAmount(newTransferDto.getAmount());
+        return transferDao.createTransfer(transfer);
+    }
+
+    @PutMapping(path = "/transfers/{id}/status")
+    public Transfer updateTransferStatus(@RequestBody TransferStatusUpdateDto transferStatusUpdateDto, @PathVariable int id){
+        Transfer transfer = transferDao.getTransferByTransferId(id);
+        transfer.setTransferStatus(transferStatusUpdateDto.getTransferStatus());
+        return transfer;
+    }
+
 
     @GetMapping(path = "/users")
     public List<User> getUsers(Principal principal){
         String username = principal.getName();
         return userDao.getUsers(username);
     }
+
+
 
 }
