@@ -13,6 +13,8 @@ public interface AccountDao {
 
     Account createAccount(Account account);
 
+    Account getAccountByUserName(String username);
+
     Account updateBalance(Account account);
 
     int deleteAccount(int id);

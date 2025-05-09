@@ -83,7 +83,23 @@ public class TransferService {
 
         return createdRequest;
     }
-}
+    
+    public Transfer approveTransfer(int transferId){
+        Transfer newTransfer = transferDao.getTransferByTransferId(transferId);
+        Account accountTo = accountDao.getAccountById(newTransfer.getAccountTo());
+        Account accountFrom = accountDao.getAccountByUserId(newTransfer.getAccountFrom());
+        newTransfer.setTransferStatusId(STATUS_APPROVED);
+        accountService.updateBalance(accountTo, newTransfer.getAmount(), true);
+        accountService.updateBalance(accountFrom, newTransfer.getAmount(), false);
 
-//getTransferByAccountFrom in Controller
-//getTransferByAccountTo in Controller
+        return newTransfer;
+    }
+
+    public Transfer rejectTransfer(int transferId){
+        Transfer newTransfer = transferDao.getTransferByTransferId(transferId);
+        newTransfer.setTransferStatusId(STATUS_REJECTED);
+        return newTransfer;
+    }
+    
+    
+}

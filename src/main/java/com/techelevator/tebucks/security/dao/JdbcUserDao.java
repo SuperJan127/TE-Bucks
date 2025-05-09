@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JdbcUserDao implements UserDao {
@@ -84,6 +86,21 @@ public class JdbcUserDao implements UserDao {
         } catch (DataIntegrityViolationException e) {
             throw new DaoException("Data integrity violation", e);
         }
+    }
+
+    @Override
+    public List<User> getUsers(String username) {
+        List<User> users = new ArrayList<>();
+        String sql = "Select * from users where username != ?;";
+        try{
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
+            while(results.next()){
+                users.add(mapRowToUser(results));
+            }
+        } catch (CannotGetJdbcConnectionException e){
+            throw new DaoException("Unable to connect to server or database", e);
+        }
+        return users;
     }
 
     private User mapRowToUser(SqlRowSet rs) {
