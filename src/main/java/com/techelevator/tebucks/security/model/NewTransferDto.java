@@ -1,17 +1,19 @@
 package com.techelevator.tebucks.security.model;
 
+import java.math.BigDecimal;
+
 public class NewTransferDto {
 
     private int userFrom;
 
     private int userTo;
 
-    private double amount;
+    private BigDecimal amount = new BigDecimal("0");
 
     private String transferType;
 
 
-    public NewTransferDto(int userFrom, int userTo, double amount, String transferType) {
+    public NewTransferDto(int userFrom, int userTo, BigDecimal amount, String transferType) {
         this.userFrom = userFrom;
         this.userTo = userTo;
         this.amount = amount;
@@ -34,11 +36,11 @@ public class NewTransferDto {
         this.userTo = userTo;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
