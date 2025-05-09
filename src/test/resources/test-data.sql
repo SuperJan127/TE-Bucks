@@ -41,8 +41,8 @@ create table transfer_statuses (
 
 create table transfers (
 	transfer_id serial not null,
-	transfer_type_id int not null,
-	transfer_status_id int not null,
+	transfer_type_id int,
+	transfer_status_id int,
 	account_from int not null,
 	account_to int not null,
 	amount numeric not null,

@@ -1,5 +1,7 @@
 package com.techelevator.tebucks.security.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 
 public class NewTransferDto {
@@ -10,7 +12,7 @@ public class NewTransferDto {
 
     private BigDecimal amount = new BigDecimal("0");
 
-    private String transferType;
+    private String transferType = "";
 
 
     public NewTransferDto(int userFrom, int userTo, BigDecimal amount, String transferType) {
@@ -18,6 +20,9 @@ public class NewTransferDto {
         this.userTo = userTo;
         this.amount = amount;
         this.transferType = transferType;
+    }
+
+    public NewTransferDto() {
     }
 
     public int getUserFrom() {
