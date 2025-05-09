@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +66,7 @@ public class JdbcTransferDao implements TransferDao{
 
     @Override
     public List<Transfer> getTransfersByAccountId(int account_id) {
+        System.out.println("ANDBY DEBUG: " + account_id);
         List<Transfer> transfers = new ArrayList<>();
         String sql = "select transfer_id, account_from, account_to, amount, type_name, status_name " +
                 "from transfers t " +
@@ -177,12 +177,23 @@ public class JdbcTransferDao implements TransferDao{
     @Override
     public Transfer createTransfer(Transfer transfer) {
         Transfer output =null;
-        String sql = "insert into transfers (account_from, " +
-                "account_to, amount) values (?, ?, ?) returning transfer_id;";
-        Account accountTo = accountDao.getAccountByUserId(transfer.getAccountTo().getId());
-        Account accountFrom = accountDao.getAccountByUserId(transfer.getAccountFrom().getId());
+        String sql = "insert into transfers (transfer_type_id, transfer_status_id, account_from, " +
+                "account_to, amount) values (?, ?, ?, ?, ?) returning transfer_id;";
+        int status = 1;
+        if(transfer.getTransferStatus().equalsIgnoreCase("Approved")){
+            status = 2;
+        } else if (transfer.getTransferStatus().equalsIgnoreCase("Rejected")){
+            status = 3;
+        }
+        int type = 1;
+        if(transfer.getTransferType().equalsIgnoreCase("Send")){
+            type = 2;
+        }
+
+        Account accountTo = accountDao.getAccountByUserId(transfer.getUserTo().getId());
+        Account accountFrom = accountDao.getAccountByUserId(transfer.getUserFrom().getId());
         try {
-            int newTransferId = jdbcTemplate.queryForObject(sql, int.class,
+            int newTransferId = jdbcTemplate.queryForObject(sql, int.class, type, status,
                     accountFrom.getAccountId(), accountTo.getAccountId(), transfer.getAmount());
             output = getTransferByTransferId(newTransferId);
         } catch (CannotGetJdbcConnectionException e) {
@@ -200,8 +211,8 @@ public class JdbcTransferDao implements TransferDao{
         transfer.setTransferId(rowSet.getInt("transfer_id"));
         transfer.setTransferType(rowSet.getString("type_name"));
         transfer.setTransferStatus(rowSet.getString("status_name"));
-        transfer.setAccountFrom(userFrom);
-        transfer.setAccountTo(userTo);
+        transfer.setUserFrom(userFrom);
+        transfer.setUserTo(userTo);
         transfer.setAmount(rowSet.getBigDecimal("amount"));
         return transfer;
     }

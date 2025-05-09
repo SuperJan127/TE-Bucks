@@ -5,14 +5,13 @@ import com.techelevator.tebucks.security.dao.TransferDao;
 import com.techelevator.tebucks.security.dao.UserDao;
 import com.techelevator.tebucks.security.model.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
 
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 @RequestMapping("/api")
 @RestController
 public class TransferController {
@@ -37,17 +36,22 @@ public class TransferController {
         if(transfer == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Transfer not found");
         } else {
-            return null;
+            return transfer;
         }
     }
-
+    //TODO why are all transfers requests
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path="/transfers")
     public Transfer createTransfer(@RequestBody NewTransferDto newTransferDto){
         Transfer transfer = new Transfer();
         transfer.setTransferType(newTransferDto.getTransferType());
-        transfer.setAccountFrom(userDao.getUserById(newTransferDto.getUserFrom()));
-        transfer.setAccountTo(userDao.getUserById(newTransferDto.getUserTo()));
+        if(transfer.getTransferType().equalsIgnoreCase("Send")){
+            transfer.setTransferStatus("Approved");
+        } else {
+            transfer.setTransferStatus("Pending");
+        }
+        transfer.setUserFrom(userDao.getUserById(newTransferDto.getUserFrom()));
+        transfer.setUserTo(userDao.getUserById(newTransferDto.getUserTo()));
         transfer.setAmount(newTransferDto.getAmount());
         return transferDao.createTransfer(transfer);
     }

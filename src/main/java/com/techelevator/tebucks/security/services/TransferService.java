@@ -1,6 +1,5 @@
 package com.techelevator.tebucks.security.services;
 
-import com.techelevator.tebucks.exception.DaoException;
 import com.techelevator.tebucks.security.dao.AccountDao;
 import com.techelevator.tebucks.security.dao.TransferDao;
 import com.techelevator.tebucks.security.dao.UserDao;
@@ -41,8 +40,8 @@ public class TransferService {
         }
 
         Transfer transfer = new Transfer();
-        transfer.setAccountFrom(userFrom);
-        transfer.setAccountTo(userTo);
+        transfer.setUserFrom(userFrom);
+        transfer.setUserTo(userTo);
         transfer.setTransferType("Send");
         transfer.setTransferStatus("Approved");
         transfer.setAmount(amount);
@@ -65,8 +64,8 @@ public class TransferService {
             throw new IllegalArgumentException("Cannot request money from the same account");
         }
         Transfer request = new Transfer();
-        request.setAccountFrom(userFrom);
-        request.setAccountTo(userTo);
+        request.setUserFrom(userFrom);
+        request.setUserTo(userTo);
         request.setTransferType("Request");
         request.setTransferStatus("Pending");
         request.setAmount(amount);
@@ -78,8 +77,8 @@ public class TransferService {
     
     public Transfer approveTransfer(int transferId){
         Transfer newTransfer = transferDao.getTransferByTransferId(transferId);
-        User userTo = newTransfer.getAccountTo();
-        User userFrom = newTransfer.getAccountFrom();
+        User userTo = newTransfer.getUserTo();
+        User userFrom = newTransfer.getUserFrom();
         newTransfer.setTransferStatus("Approved");
         accountService.updateBalance(accountDao.getAccountByUserId(userTo.getId()),
                 newTransfer.getAmount(),
