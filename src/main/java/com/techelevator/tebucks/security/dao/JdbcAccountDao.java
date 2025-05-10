@@ -107,8 +107,8 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public Account updateBalance(Account account) {
         Account output = null;
-        String sql = "update account" +
-                "set balance = ? where account_id = ?;";
+        String sql = "update accounts" +
+                " set balance = ? where account_id = ?;";
         try{
             int numberOfRows = jdbcTemplate.update(sql,account.getBalance(),
                     account.getAccountId());

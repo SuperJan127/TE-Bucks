@@ -66,4 +66,12 @@ INSERT INTO users (username,password_hash,role) VALUES ('user1','user1','ROLE_US
 INSERT INTO users (username,password_hash,role) VALUES ('user2','user2','ROLE_USER'); -- 2
 INSERT INTO users (username,password_hash,role) VALUES ('user3','user3','ROLE_USER'); -- 3
 
+INSERT INTO accounts (user_id, balance) Values (1, 1000);
+INSERT INTO accounts (user_id, balance) Values (2, 1000);
+INSERT INTO accounts (user_id, balance) Values (3, 1000);
+
+INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) values (1, 1, 1, 2, 20);
+INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) values (2, 2, 2, 1, 30.02);
+INSERT INTO transfers (transfer_type_id, transfer_status_id, account_from, account_to, amount) values (1, 1, 3, 3, 30.02);
+
 COMMIT TRANSACTION;

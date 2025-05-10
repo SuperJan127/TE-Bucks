@@ -22,6 +22,7 @@ public class AccountService {
     }
 
     public void updateBalance(Account account, BigDecimal amount, boolean isAddition) {
+        System.out.println("Updating Balance");
         BigDecimal newBalance;
         if (isAddition) {
             newBalance = account.getBalance().add(amount);
