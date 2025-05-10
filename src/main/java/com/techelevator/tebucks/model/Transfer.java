@@ -1,4 +1,6 @@
-package com.techelevator.tebucks.security.model;
+package com.techelevator.tebucks.model;
+
+import com.techelevator.tebucks.security.model.User;
 
 import java.math.BigDecimal;
 

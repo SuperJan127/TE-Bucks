@@ -1,4 +1,4 @@
-package com.techelevator.tebucks.security.model;
+package com.techelevator.tebucks.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,7 +11,6 @@ public class NewTransferDto {
 
     private int userTo;
 
-    @DecimalMin(value = "0.01")
     private BigDecimal amount = new BigDecimal("0");
 
     private String transferType = "";

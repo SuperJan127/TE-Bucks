@@ -1,6 +1,6 @@
-package com.techelevator.tebucks.security.dao;
+package com.techelevator.tebucks.dao;
 
-import com.techelevator.tebucks.security.model.Transfer;
+import com.techelevator.tebucks.model.Transfer;
 
 import java.util.List;
 
@@ -11,10 +11,6 @@ public interface TransferDao {
     Transfer getTransferByTransferId(int id);
 
     List<Transfer> getTransfersByAccountId(int account_id);
-
-    List<Transfer> getTransfersByAccountTo(int account_id);
-
-    List<Transfer> getTransferByAccountFrom(int account_id);
 
     List<Transfer> getTransferByStatusId(int status_id);
 

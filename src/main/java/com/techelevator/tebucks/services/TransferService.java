@@ -1,10 +1,10 @@
-package com.techelevator.tebucks.security.services;
+package com.techelevator.tebucks.services;
 
-import com.techelevator.tebucks.security.dao.AccountDao;
-import com.techelevator.tebucks.security.dao.TransferDao;
+import com.techelevator.tebucks.dao.AccountDao;
+import com.techelevator.tebucks.dao.TransferDao;
 import com.techelevator.tebucks.security.dao.UserDao;
-import com.techelevator.tebucks.security.model.Account;
-import com.techelevator.tebucks.security.model.Transfer;
+import com.techelevator.tebucks.model.Account;
+import com.techelevator.tebucks.model.Transfer;
 import com.techelevator.tebucks.security.model.User;
 import org.springframework.stereotype.Service;
 

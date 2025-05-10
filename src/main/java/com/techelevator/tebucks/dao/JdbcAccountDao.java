@@ -1,7 +1,7 @@
-package com.techelevator.tebucks.security.dao;
+package com.techelevator.tebucks.dao;
 
 import com.techelevator.tebucks.exception.DaoException;
-import com.techelevator.tebucks.security.model.Account;
+import com.techelevator.tebucks.model.Account;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -125,9 +125,11 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public int deleteAccount(int id) {
+        String deleteTransfers = "delete from transfers where account_from = ? OR account_to = ?;";
         int numberOfRows = 0;
         String sql = "delete from accounts where account_id = ?;";
         try {
+            jdbcTemplate.update(deleteTransfers, id, id);
             numberOfRows = jdbcTemplate.update(sql, id);
         } catch (Exception e){
             throw new DaoException("Cannot delete account", e);
