@@ -1,10 +1,10 @@
 package com.techelevator.tebucks.security.dao;
 
+import com.techelevator.tebucks.dao.AccountDao;
 import com.techelevator.tebucks.exception.DaoException;
-import com.techelevator.tebucks.security.model.Account;
+import com.techelevator.tebucks.model.Account;
 import com.techelevator.tebucks.security.model.RegisterUserDto;
 import com.techelevator.tebucks.security.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,7 +12,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +19,12 @@ import java.util.List;
 public class JdbcUserDao implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
-    @Autowired
-    private JdbcAccountDao accountDao;
+    private AccountDao accountDao;
 
-    public JdbcUserDao(JdbcTemplate jdbcTemplate) {
+
+    public JdbcUserDao(JdbcTemplate jdbcTemplate, AccountDao accountDao) {
         this.jdbcTemplate = jdbcTemplate;
+        this.accountDao = accountDao;
     }
 
 

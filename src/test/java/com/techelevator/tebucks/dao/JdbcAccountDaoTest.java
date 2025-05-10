@@ -1,16 +1,15 @@
 package com.techelevator.tebucks.dao;
 
-import com.techelevator.tebucks.security.dao.JdbcAccountDao;
-import com.techelevator.tebucks.security.model.Account;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.techelevator.tebucks.model.Account;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class JdbcAccountDaoTest extends BaseDaoTests  {
     private JdbcAccountDao sut;
@@ -18,40 +17,60 @@ public class JdbcAccountDaoTest extends BaseDaoTests  {
     private static final Account ACCOUNT_2 = new Account(2, 2, new BigDecimal(1000));
     private static final Account ACCOUNT_3 = new Account(3, 3, new BigDecimal(1000));
 
-    @BeforeEach
+    @Before
     public void setup() { JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         sut = new JdbcAccountDao(jdbcTemplate.getDataSource());}
 
 
     @Test
-    void getAccounts_returns_correct_number_of_accounts() {
+    public void getAccounts_returns_correct_number_of_accounts() {
         List<Account> accounts = sut.getAccounts();
         assertEquals(3, accounts.size());
     }
 
     @Test
-    void getAccountById_returns_correct_account() {
+    public void getAccountById_returns_correct_account() {
         Account account = sut.getAccountById(1);
-        //assertEquals
+        assertNotNull(account);
+        assertEquals(account.getAccountId(), 1);
+
+        Account account2 = sut.getAccountById(2);
+        assertNotNull(account2);
+        assertEquals(account2.getAccountId(), 2);
     }
 
     @Test
-    void getAccountByUserId() {
+    public void getAccountByUserId_returns_correct_account() {
+        Account account = sut.getAccountByUserId(1);
+        assertNotNull(account);
+        assertEquals(account.getUserId(), 1);
     }
 
     @Test
-    void createAccount() {
+    public void createAccount_creates_an_account() {
+        Account account = new Account(3, 3, new BigDecimal(1000));
+        Account createdAccount = sut.createAccount(account);
+        assertNotNull(createdAccount);
     }
 
     @Test
-    void getAccountByUserName() {
+    public void getAccountByUserName_returns_correct_account() {
+        Account account = sut.getAccountByUserName("user1");
+        assertNotNull(account);
+        assertEquals(account.getUserId(), 1);
     }
 
     @Test
-    void updateBalance() {
+    public void updateBalance() {
+        Account account = sut.getAccountById(1);
+        account.setBalance(new BigDecimal(2000));
+        sut.updateBalance(account);
+        assertEquals(account.getBalance(), new BigDecimal(2000));
     }
 
     @Test
-    void deleteAccount() {
+    public void deleteAccount() {
+        sut.deleteAccount(1);
+        assertNull(sut.getAccountById(1));
     }
 }

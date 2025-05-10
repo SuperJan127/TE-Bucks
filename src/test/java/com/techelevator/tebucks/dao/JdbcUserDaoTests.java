@@ -1,6 +1,5 @@
 package com.techelevator.tebucks.dao;
 
-import com.techelevator.tebucks.security.dao.AccountDao;
 import com.techelevator.tebucks.security.dao.JdbcUserDao;
 import com.techelevator.tebucks.exception.DaoException;
 import com.techelevator.tebucks.security.model.RegisterUserDto;
@@ -17,11 +16,14 @@ public class JdbcUserDaoTests extends BaseDaoTests {
 
     private JdbcUserDao sut;
 
+    private AccountDao accountDao;
+
 
     @Before
     public void setup() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        sut = new JdbcUserDao(jdbcTemplate);
+        accountDao = new JdbcAccountDao(dataSource);
+        sut = new JdbcUserDao(jdbcTemplate, accountDao);
     }
 
     @Test(expected = IllegalArgumentException.class)

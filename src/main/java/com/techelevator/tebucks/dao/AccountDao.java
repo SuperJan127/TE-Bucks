@@ -1,6 +1,6 @@
-package com.techelevator.tebucks.security.dao;
+package com.techelevator.tebucks.dao;
 
-import com.techelevator.tebucks.security.model.Account;
+import com.techelevator.tebucks.model.Account;
 
 import java.util.List;
 
