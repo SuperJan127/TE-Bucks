@@ -8,6 +8,8 @@ public class TransferStatusUpdateDto {
         this.transferStatus = transferStatus;
     }
 
+    public TransferStatusUpdateDto() {}
+
     public String getTransferStatus() {
         return transferStatus;
     }

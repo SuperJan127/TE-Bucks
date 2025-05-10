@@ -66,7 +66,6 @@ public class JdbcTransferDao implements TransferDao{
 
     @Override
     public List<Transfer> getTransfersByAccountId(int account_id) {
-        System.out.println("ANDBY DEBUG: " + account_id);
         List<Transfer> transfers = new ArrayList<>();
         String sql = "select transfer_id, account_from, account_to, amount, type_name, status_name " +
                 "from transfers t " +
@@ -146,9 +145,15 @@ public class JdbcTransferDao implements TransferDao{
     public Transfer updateTransferStatus(Transfer transfer) {
         Transfer output = null;
         String sql = "update transfers" +
-                "set transfer_status where transfer_id = ?;";
+                " set transfer_status_id = ? where transfer_id = ?;";
+        int statusId = 1;
+        if (transfer.getTransferStatus().equalsIgnoreCase("Approved")){
+            statusId = 2;
+        } else if (transfer.getTransferStatus().equalsIgnoreCase("Rejected")){
+            statusId = 3;
+        }
         try {
-            int numberOfRows = jdbcTemplate.update(sql, transfer.getTransferId());
+            int numberOfRows = jdbcTemplate.update(sql, statusId, transfer.getTransferId());
             if (numberOfRows == 0){
                 throw new DaoException("No transfers were updated");
             }else {
