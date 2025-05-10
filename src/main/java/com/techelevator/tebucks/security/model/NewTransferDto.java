@@ -2,6 +2,7 @@ package com.techelevator.tebucks.security.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 
 public class NewTransferDto {
@@ -10,6 +11,7 @@ public class NewTransferDto {
 
     private int userTo;
 
+    @DecimalMin(value = "0.01")
     private BigDecimal amount = new BigDecimal("0");
 
     private String transferType = "";
