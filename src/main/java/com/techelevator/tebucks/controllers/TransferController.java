@@ -9,6 +9,7 @@ import com.techelevator.tebucks.security.dao.UserDao;
 import com.techelevator.tebucks.security.model.*;
 import com.techelevator.tebucks.services.AccountService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,7 +19,7 @@ import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("/api")
 @RestController
 public class TransferController {
