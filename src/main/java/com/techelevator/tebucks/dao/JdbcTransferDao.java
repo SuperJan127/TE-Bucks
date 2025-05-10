@@ -1,8 +1,9 @@
-package com.techelevator.tebucks.security.dao;
+package com.techelevator.tebucks.dao;
 
 import com.techelevator.tebucks.exception.DaoException;
-import com.techelevator.tebucks.security.model.Account;
-import com.techelevator.tebucks.security.model.Transfer;
+import com.techelevator.tebucks.security.dao.UserDao;
+import com.techelevator.tebucks.model.Account;
+import com.techelevator.tebucks.model.Transfer;
 import com.techelevator.tebucks.security.model.User;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -84,45 +85,6 @@ public class JdbcTransferDao implements TransferDao{
     }
 
     @Override
-    public List<Transfer> getTransfersByAccountTo(int account_id) {
-        List<Transfer> transfers = new ArrayList<>();
-        String sql = "select transfer_id, account_from, account_to, amount, type_name, status_name " +
-                "from transfers t " +
-                "join transfer_types tt on t.transfer_type_id = tt.type_id " +
-                "join transfer_statuses ts on t.transfer_status_id = ts.status_id " +
-                "where account_to = ?;";
-        try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, account_id);
-            while (results.next()){
-                transfers.add(mapRowToTransfer(results));
-            }
-        }catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
-        }
-        return transfers;
-    }
-
-    @Override
-    public List<Transfer> getTransferByAccountFrom(int account_id) {
-        List<Transfer> transfers = new ArrayList<>();
-        String sql = "select transfer_id, account_from, account_to, amount, type_name, " +
-                "status_name " +
-                "from transfers t " +
-                "join transfer_types tt on t.transfer_type_id = tt.type_id " +
-                "join transfer_statuses ts on t.transfer_status_id = ts.status_id " +
-                "where account_to = ? or account_from = ? ;";
-        try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, account_id);
-            while (results.next()){
-                transfers.add(mapRowToTransfer(results));
-            }
-        }catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
-        }
-        return transfers;
-    }
-
-    @Override
     public List<Transfer> getTransferByStatusId(int status_id) {
         List<Transfer> transfers = new ArrayList<>();
         String sql = "select transfer_id, account_from, account_to, amount, type_name, status_name " +
@@ -132,7 +94,7 @@ public class JdbcTransferDao implements TransferDao{
                 "where status_id = ?;";
         try{
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, status_id);
-            if(results.next()){
+            while(results.next()){
                 transfers.add(mapRowToTransfer(results));
             }
         }catch (CannotGetJdbcConnectionException e) {

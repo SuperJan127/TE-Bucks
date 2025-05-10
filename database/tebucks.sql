@@ -66,12 +66,5 @@ values ('Pending'),
 		('Approved'),
 		('Rejected');
 		
-insert into users (username, password_hash, first_name, last_name, email)
-values ('test1', 'test1', 'test', '1', 'test1@email.com'),
-		('test2', 'test2', 'test', '2', 'test2@email.com');
-		
-insert into accounts (user_id, balance)
-values ((select user_id from users where username = 'test1'), 1000 ),
-		((select user_id from users where username = 'test2'), 1000);
 		
 COMMIT TRANSACTION;
