@@ -19,6 +19,12 @@ public class JdbcTransferDao implements TransferDao{
     private final JdbcTemplate jdbcTemplate;
     private UserDao userDao;
 
+    private static final int STATUS_PENDING = 1;
+    private static final int STATUS_APPROVED = 2;
+    private static final int STATUS_REJECTED = 3;
+    private static final int TYPE_REQUEST = 1;
+    private static final int TYPE_SEND = 2;
+
     private AccountDao accountDao;
 
     public JdbcTransferDao(JdbcTemplate jdbcTemplate, UserDao userDao, AccountDao accountDao) {
@@ -106,13 +112,13 @@ public class JdbcTransferDao implements TransferDao{
     @Override
     public Transfer updateTransferStatus(Transfer transfer) {
         Transfer output = null;
-        String sql = "update transfers" +
-                " set transfer_status_id = ? where transfer_id = ?;";
-        int statusId = 1;
+        String sql = "update transfers " +
+                "set transfer_status_id = ? where transfer_id = ?;";
+        int statusId = STATUS_PENDING;
         if (transfer.getTransferStatus().equalsIgnoreCase("Approved")){
-            statusId = 2;
+            statusId = STATUS_APPROVED;
         } else if (transfer.getTransferStatus().equalsIgnoreCase("Rejected")){
-            statusId = 3;
+            statusId = STATUS_REJECTED;
         }
         try {
             int numberOfRows = jdbcTemplate.update(sql, statusId, transfer.getTransferId());
@@ -146,15 +152,15 @@ public class JdbcTransferDao implements TransferDao{
         Transfer output =null;
         String sql = "insert into transfers (transfer_type_id, transfer_status_id, account_from, " +
                 "account_to, amount) values (?, ?, ?, ?, ?) returning transfer_id;";
-        int status = 1;
+        int status = STATUS_PENDING;
         if(transfer.getTransferStatus().equalsIgnoreCase("Approved")){
-            status = 2;
+            status = STATUS_APPROVED;
         } else if (transfer.getTransferStatus().equalsIgnoreCase("Rejected")){
-            status = 3;
+            status = STATUS_REJECTED;
         }
-        int type = 1;
+        int type = TYPE_REQUEST;
         if(transfer.getTransferType().equalsIgnoreCase("Send")){
-            type = 2;
+            type = TYPE_SEND;
         }
 
         Account accountTo = accountDao.getAccountByUserId(transfer.getUserTo().getId());
